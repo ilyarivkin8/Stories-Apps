@@ -1,0 +1,7 @@
+{
+  "name": "Copy of הרפתקאות פופו וטוטו",
+  "description": "אפליקציית סיפורים אינטראקטיבית לילדים בכיכובם של פופו וטוטו",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
