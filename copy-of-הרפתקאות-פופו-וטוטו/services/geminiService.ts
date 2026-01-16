@@ -73,26 +73,25 @@ export const generateStory = async (prompt: string, pageCount: number): Promise<
   }
 };
 
+  // Combining the global character reference with the specific page scene description.
 export const generateImage = async (imagePrompt: string): Promise<string> => {
   if (!imagePrompt || imagePrompt.trim() === "") return "";
-  
-  // Combining the global character reference with the specific page scene description.
-  const fullPrompt = `${CHARACTER_DESCRIPTION}
-  SCENE DESCRIPTION: ${imagePrompt}
-  REMEMBER: Toto and Popo are BROTHERS. Toto is tall in RED, Popo is short in BLUE. Both have young children's faces, NO BEARDS. Snoopy is always present. 2D Illustration style.`;
-  
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-image',
-    contents: {
-      parts: [{ text: fullPrompt }]
-    }
-  });
 
-  for (const part of response.candidates?.[0]?.content?.parts || []) {
-    if (part.inlineData) {
-      return `data:image/png;base64,${part.inlineData.data}`;
-    }
+  try {
+    // Combining the global character reference with the specific page scene description.
+    const fullPrompt = `${CHARACTER_DESCRIPTION}
+SCENE DESCRIPTION: ${imagePrompt}
+REMEMBER: Toto and Popo are BROTHERS. Toto is tall in RED, Popo is short in BLUE. Both have young children's faces, NO BEARDS. Snoopy is always present. 2D Illustration style.`;
+
+    // Using Pollinations.ai - a free image generation API
+    // It works by encoding the prompt in the URL
+    const encodedPrompt = encodeURIComponent(fullPrompt);
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=600&model=flux&seed=${Math.floor(Math.random() * 10000)}`;
+    
+    // Return the URL directly - the browser will load it
+    return imageUrl;
+  } catch (error) {
+    console.error("Failed to generate image", error);
+    return `https://picsum.photos/seed/${Math.random()}/800/600`;
   }
-  
-  return `https://picsum.photos/seed/${Math.random()}/800/600`;
 };
